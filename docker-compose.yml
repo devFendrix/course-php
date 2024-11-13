@@ -1,0 +1,35 @@
+version: '3'
+
+services:
+  apache:
+    build:
+      context: ./apache
+      dockerfile: Dockerfile
+    ports:
+      - "8080:80"
+    volumes:
+      - ./app:/var/www/html
+    depends_on:
+      - mariadb
+    networks:
+      - phpcourse
+
+  mariadb:
+    image: mariadb:10.11
+    restart: always
+    container_name: php-course-db
+    environment:
+      MYSQL_ROOT_PASSWORD: devdev
+      MYSQL_USER: dev
+      MYSQL_PASSWORD: dev
+      MYSQL_DATABASE: php_course
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./bdd/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - phpcourse
+
+networks:
+  phpcourse:
+    driver: bridge
