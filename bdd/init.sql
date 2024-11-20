@@ -8,11 +8,3 @@ CREATE TABLE IF NOT EXISTS users (
     lastname VARCHAR(255),
     username VARCHAR(255)
 );
-
-CREATE TABLE IF NOT EXISTS cars (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    model VARCHAR(255),
-    brand VARCHAR(255),
-    price DECIMAL(8,2),
-    nb_seat INT(11)
-);
