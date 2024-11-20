@@ -6,5 +6,7 @@ CREATE TABLE IF NOT EXISTS users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     firstname VARCHAR(255),
     lastname VARCHAR(255),
-    username VARCHAR(255)
+    username VARCHAR(255),
+    mail VARCHAR(255),
+    age INT(11)
 );
