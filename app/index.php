@@ -94,6 +94,7 @@ $users = $query->fetchAll(PDO::FETCH_OBJ);
 </head>
 <body>
 <h1>PHP Test Page</h1>
+<a href="exo.php" target="_blank">haha</a>
 
 <?php if ($users): ?>
     <table>

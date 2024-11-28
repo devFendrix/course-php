@@ -1,7 +1,11 @@
 <?php
 /**
  * Class User
- * Creation d'une classe user qui prend en compte  parametres
+ *
+ * Un objet : Une instanciation d'une class
+ * Une class est constitué de :
+ *  - Propriétés ou attributs -> définir un état
+ *  - Méthodes -> définir un comportement
  */
 
 class User {
@@ -44,9 +48,7 @@ class User {
 
         $query->execute();
 
-        $id = $db->lastInsertId();
-
-        return new User($db, $id);
+        return new User($db, $db->lastInsertId());
     }
 
     public function delete(): void
