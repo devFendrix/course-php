@@ -37,7 +37,7 @@ class User {
         $this->db = $db;
     }
 
-    public static function create($db, $firstname, $lastname, $username, $mail, $age): User
+    public static function create($db, $firstname, $lastname, $username, $mail, $age, $carId): User
     {
         $query = $db->prepare("INSERT INTO users (firstname, lastname, username, mail, age) VALUES (:firstname, :lastname, :username, :mail, :age)");
         $query->bindValue(':firstname', $firstname);
@@ -45,10 +45,19 @@ class User {
         $query->bindValue(':username', $username);
         $query->bindValue(':mail', $mail);
         $query->bindValue(':age', $age, PDO::PARAM_INT);
-
         $query->execute();
 
-        return new User($db, $db->lastInsertId());
+        $userId = $db->lastInsertId();
+
+        if($carId) {
+            $queryAddCar = $db->prepare("INSERT INTO cars_users (id_user, id_car, assigned_at) VALUES (:id_user, :id_car, :assigned_at)");
+            $queryAddCar->bindValue(':id_user', $userId, PDO::PARAM_INT);
+            $queryAddCar->bindValue(':id_car', $carId, PDO::PARAM_INT);
+            $queryAddCar->bindValue(':assigned_at', date("Y-m-d H:i:s"));
+            $queryAddCar->execute();
+        }
+
+        return new User($db, $userId);
     }
 
     public function delete(): void

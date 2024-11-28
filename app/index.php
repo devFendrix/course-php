@@ -11,7 +11,7 @@ $db = connect();
 
 // Insertion dans la base de données
 if(isset($_POST['insert-user'])) {
-    User::create($db, $_POST['firstname'], $_POST['lastname'], $_POST['username'], $_POST['mail'], $_POST['age']);
+    User::create($db, $_POST['firstname'], $_POST['lastname'], $_POST['username'], $_POST['mail'], $_POST['age'], $_POST['cars']);
 }
 // Suppression d'une entrée dans la base de données
 if(isset($_POST['delete-user'])){
@@ -31,9 +31,24 @@ if(isset($_POST['update-user'])){
 }
 
 // Récupération des utilisateurs
-$query = $db->prepare("SELECT firstname, lastname, username, mail, age, id FROM users");
+$query = $db->prepare("
+    SELECT 
+        u.firstname, u.lastname, u.username, u.mail, u.age, u.id as user_id,
+        c.model, c.brand, c.id   
+    FROM users u 
+    LEFT JOIN cars_users cu ON u.id = cu.id_user
+    LEFT JOIN cars c ON cu.id_car = c.id
+    GROUP BY u.id
+");
 $query->execute();
 $users = $query->fetchAll(PDO::FETCH_OBJ);
+
+// Récupération des voitures
+$queryCars = $db->prepare("SELECT * FROM cars");
+$queryCars->execute();
+$cars = $queryCars->fetchAll(PDO::FETCH_OBJ);
+
+//print_r($cars);
 ?>
 
 
@@ -104,9 +119,22 @@ $users = $query->fetchAll(PDO::FETCH_OBJ);
             <th>Pseudo</th>
             <th>Mail</th>
             <th>Age</th>
+            <th>Voitures</th>
             <th>Action</th>
         </tr>
-        <?php foreach ($users as $user): ?>
+        <?php foreach ($users as $user):
+
+            $queryHasCars = $db->prepare("
+                SELECT c.model, c.brand
+                FROM cars_users cu
+                JOIN cars c ON cu.id_car = c.id
+                WHERE cu.id_user = :id_user
+            ");
+            $queryHasCars->bindValue('id_user', $user->user_id, PDO::PARAM_INT);
+            $queryHasCars->execute();
+
+            $userCars = $queryHasCars->fetchAll(PDO::FETCH_OBJ);
+        ?>
             <form class="form-users" method="POST">
                 <tr>
                     <td><input type="text" name="firstname" value="<?= $user->firstname ?>"/></td>
@@ -115,7 +143,18 @@ $users = $query->fetchAll(PDO::FETCH_OBJ);
                     <td><input type="text" name="mail" value="<?= $user->mail ?>"/></td>
                     <td><input type="number" name="age" value="<?= $user->age ?>"/></td>
                     <td>
-                        <input type="hidden" name="id-user" value="<?= $user->id ?>"/>
+                        <?php
+                            if ($userCars):
+                            foreach ($userCars as $userCar):
+                        ?>
+                            <span><?= $userCar->model . ' / ' . $userCar->brand ?></span><br>
+                        <?php
+                            endforeach;
+                            endif;
+                        ?>
+                    </td>
+                    <td>
+                        <input type="hidden" name="id-user" value="<?= $user->user_id ?>"/>
                         <button class="delete-user" name="delete-user">Supprimer</button>
                         <button class="update-user" name="update-user">Modifier</button>
                     </td>
@@ -141,6 +180,18 @@ $users = $query->fetchAll(PDO::FETCH_OBJ);
     <label for="age">Age :</label>
     <input type="number" min="1"  id="age" name="age" placeholder="Votre age..">
     <br>
+
+    <?php if ($cars): ?>
+        <label for="cars">Choisissez votre voiture :</label>
+        <select name="cars" id="cars">
+            <option value="" selected></option>
+            <?php foreach ($cars as $car): ?>
+                <option value="<?= $car->id ?>"><?= $car->model . ' / ' . $car->brand ?></option>
+            <?php endforeach; ?>
+        </select>
+        <br>
+    <?php endif; ?>
+
 
     <input type="submit" name="insert-user" id="submit-btn" value="Envoyer">
 </form>
