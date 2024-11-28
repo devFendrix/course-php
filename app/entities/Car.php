@@ -53,7 +53,6 @@ class Car {
         $query->bindValue(':brand', $this->brand);
         $query->bindValue(':price', $this->price);
         $query->bindValue(':build_at', $this->build_at);
-        $query->execute();
         $query->bindValue(":id", $this->id);
         $query->execute();
 

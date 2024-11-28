@@ -99,7 +99,7 @@ $users = $query->fetchAll(PDO::FETCH_OBJ);
 <?php if ($users): ?>
     <table>
         <tr>
-            <th>Prénomeeeeee</th>
+            <th>Prénom</th>
             <th>Nom</th>
             <th>Pseudo</th>
             <th>Mail</th>
