@@ -33,6 +33,32 @@ if(isset($_POST['update-car'])){
 $query = $db->prepare("SELECT * FROM cars");
 $query->execute();
 $cars = $query->fetchAll(PDO::FETCH_OBJ);
+
+// Récupération des utilisateurs
+$queryUsers = $db->prepare("SELECT * FROM users");
+$queryUsers->execute();
+$users = $queryUsers->fetchAll(PDO::FETCH_OBJ);
+
+// Ajout d'un utilisateur à un véhicule
+if (isset($_POST['add-user-to-car'])) {
+    $userId = $_POST['user_id'];
+    $carId = $_POST['car_id'];
+
+    try {
+        $user = new User($db, $userId); // Vérification de l'utilisateur
+        $car = new Car($db, $carId);    // Vérification de la voiture
+
+        $queryAddCar = $db->prepare("INSERT INTO cars_users (id_user, id_car, assigned_at) VALUES (:id_user, :id_car, :assigned_at)");
+        $queryAddCar->bindValue(':id_user', $userId, PDO::PARAM_INT);
+        $queryAddCar->bindValue(':id_car', $carId, PDO::PARAM_INT);
+        $queryAddCar->bindValue(':assigned_at', date("Y-m-d H:i:s"));
+        $queryAddCar->execute();
+
+        echo "L'utilisateur a été ajouté à la voiture avec succès.";
+    } catch (Exception $e) {
+        echo "Erreur : " . $e->getMessage();
+    }
+}
 ?>
 
 
@@ -137,5 +163,30 @@ $cars = $query->fetchAll(PDO::FETCH_OBJ);
     <input type="submit" name="insert-car" id="submit-btn" value="Envoyer">
 </form>
 
+
+
+<form method="POST">
+    <label for="user_id">Sélectionnez un utilisateur :</label>
+    <select name="user_id" required>
+        <option value="">-- Choisir un utilisateur --</option>
+        <?php foreach ($users as $user): ?>
+            <option value="<?= $user->id ?>">
+                <?= htmlspecialchars($user->firstname . ' ' . $user->lastname) ?>
+            </option>
+        <?php endforeach; ?>
+    </select>
+
+    <label for="car_id">Sélectionnez une voiture :</label>
+    <select name="car_id" required>
+        <option value="">-- Choisir une voiture --</option>
+        <?php foreach ($cars as $car): ?>
+            <option value="<?= $car->id ?>">
+                <?= htmlspecialchars($car->brand . ' ' . $car->model) ?>
+            </option>
+        <?php endforeach; ?>
+    </select>
+
+    <input type="submit" name="add-user-to-car" value="Associer utilisateur à la voiture">
+</form>
 </body>
 </html>

@@ -47,8 +47,6 @@ $users = $query->fetchAll(PDO::FETCH_OBJ);
 $queryCars = $db->prepare("SELECT * FROM cars");
 $queryCars->execute();
 $cars = $queryCars->fetchAll(PDO::FETCH_OBJ);
-
-//print_r($cars);
 ?>
 
 
@@ -109,7 +107,7 @@ $cars = $queryCars->fetchAll(PDO::FETCH_OBJ);
 </head>
 <body>
 <h1>PHP Test Page</h1>
-<a href="exo.php" target="_blank">haha</a>
+<a href="exo.php" target="_blank">Ajouter un véhicule</a>
 
 <?php if ($users): ?>
     <table>
