@@ -111,7 +111,7 @@ $cars = $query->fetchAll(PDO::FETCH_OBJ);
                     <td><input type="text" name="price" value="<?= $car->price ?>"/></td>
                     <td><input type="date" name="build_at" value="<?= $car->build_at ?>"/></td>
                     <td>
-                        <input type="hidden" name="id-user" value="<?= $car->id ?>"/>
+                        <input type="hidden" name="id-car" value="<?= $car->id ?>"/>
                         <button class="delete-car" name="delete-car">Supprimer</button>
                         <button class="update-car" name="update-car">Modifier</button>
                     </td>
