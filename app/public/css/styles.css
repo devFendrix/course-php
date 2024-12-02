@@ -1,0 +1,48 @@
+table{
+    font-family: Arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+tr:hover{
+    background-color: #e1e1e1;
+}
+
+#form_car{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin: 1rem;
+}
+
+label{
+    text-align: center;
+}
+input[type="text"] {
+    padding: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+}
+
+#submit-btn {
+    padding: 0.5rem 1rem;
+    border-radius: 10px;
+    border: 1px;
+    background-color: #eee;
+    color: #222;
+}
+
+#submit-btn:hover {
+    background-color: #ddd;
+    color: #333;
+}
